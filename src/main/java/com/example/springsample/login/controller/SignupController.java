@@ -2,6 +2,9 @@ package com.example.springsample.login.controller;
 
 import com.example.springsample.login.domain.model.GroupOrder;
 import com.example.springsample.login.domain.model.SignupForm;
+import com.example.springsample.login.domain.model.User;
+import com.example.springsample.login.domain.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +18,9 @@ import java.util.Map;
 
 @Controller
 public class SignupController {
+    @Autowired
+    private UserService userService;
+
     private Map<String, String> radioMarriage;
 
     private Map<String, String> initRadioMarriage() {
@@ -38,6 +44,24 @@ public class SignupController {
             return getSignUp(form, model);
         }
         System.out.println(form);
+
+        User user = new User();
+        user.setUserId(form.getUserId());
+        user.setPassword(form.getPassword());
+        user.setUserName(form.getUserName());
+        user.setBirthday(form.getBirthday());
+        user.setAge(form.getAge());
+        user.setMarriage(form.isMarriage());
+        user.setRole("ROLE_GENERAL");
+
+        boolean isSuccessfulInsertion = userService.insert(user);
+        if (isSuccessfulInsertion) {
+            System.out.println("insert成功");
+        } else {
+            System.out.println("insert失敗");
+
+        }
+
         return "redirect:/login";
     }
 }

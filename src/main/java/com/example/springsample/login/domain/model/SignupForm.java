@@ -2,7 +2,6 @@ package com.example.springsample.login.domain.model;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
@@ -16,7 +15,7 @@ public class SignupForm {
 
     @NotBlank(groups = ValidGroup1.class)
     @Length(min = 4, max = 100, groups = ValidGroup2.class)
-    @Pattern(regexp = "^[a-zA-Z0-9]+$]", groups = ValidGroup3.class)
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", groups = ValidGroup3.class)
     private String password;
 
     @NotBlank(groups = ValidGroup1.class)
