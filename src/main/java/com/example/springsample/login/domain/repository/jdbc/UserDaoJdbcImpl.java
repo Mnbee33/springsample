@@ -7,13 +7,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Repository
+@Repository("UserDaoJdbcImpl")
 public class UserDaoJdbcImpl implements UserDao {
     @Autowired
     JdbcTemplate jdbc;
@@ -92,6 +91,13 @@ public class UserDaoJdbcImpl implements UserDao {
                 , user.getBirthday()
                 , user.getAge()
                 , user.isMarriage());
+
+/*
+        if (rowNumber > 0) {
+            throw new DataAccessException("Transaction Test") {
+            };
+        }
+*/
         return rowNumber;
 
     }
@@ -104,6 +110,8 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public void userCsvOut() throws DataAccessException {
-
+        String sql = "SELECT * FROM m_user";
+        UserRowCallbackHandler handler = new UserRowCallbackHandler();
+        jdbc.query(sql, handler);
     }
 }
