@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" rel="stylesheet"/>
@@ -16,7 +18,7 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="#">SpringSample</a>
         </div>
-        <form method="post" th:action="@{/layout}">
+        <form method="post" th:action="@{'/logout'}">
             <button class="btn btn-link pull-right navbar-brand" type="submit">ログアウト</button>
         </form>
     </div>
@@ -28,6 +30,9 @@
             <ul class="nav nav-pills nav-stacked">
                 <li role="presentation">
                     <a th:href="@{'/userList'}">ユーザ管理</a>
+                </li>
+                <li role="presentation" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{'/admin'}">管理者権限用画面</a>
                 </li>
             </ul>
         </div>

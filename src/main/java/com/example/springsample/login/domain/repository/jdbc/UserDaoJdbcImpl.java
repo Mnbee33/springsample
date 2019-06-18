@@ -5,6 +5,7 @@ import com.example.springsample.login.domain.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -17,6 +18,9 @@ public class UserDaoJdbcImpl implements UserDao {
     @Autowired
     JdbcTemplate jdbc;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Override
     public int count() throws DataAccessException {
         int count = jdbc.queryForObject("SELECT COUNT(*) FROM m_user", Integer.class);
@@ -25,6 +29,8 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public int insertOne(User user) throws DataAccessException {
+        String password = passwordEncoder.encode(user.getPassword());
+
         int rowNumber = jdbc.update(
                 "INSERT INTO m_user(user_id," +
                         " password," +
@@ -35,7 +41,7 @@ public class UserDaoJdbcImpl implements UserDao {
                         "role)" +
                         " VALUES(?, ?, ?, ?, ?, ?, ?)"
                 , user.getUserId()
-                , user.getPassword()
+                , password
                 , user.getUserName()
                 , user.getBirthday()
                 , user.getAge()
@@ -79,6 +85,8 @@ public class UserDaoJdbcImpl implements UserDao {
 
     @Override
     public int updateOne(User user) throws DataAccessException {
+        String password = passwordEncoder.encode(user.getPassword());
+
         int rowNumber = jdbc.update(
                 "UPDATE m_user SET " +
                         " password = ?," +
@@ -86,7 +94,7 @@ public class UserDaoJdbcImpl implements UserDao {
                         " birthday = ?," +
                         " age = ?," +
                         " marriage = ?"
-                , user.getPassword()
+                , password
                 , user.getUserName()
                 , user.getBirthday()
                 , user.getAge()
