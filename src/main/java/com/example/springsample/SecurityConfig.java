@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.sql.DataSource;
 
@@ -49,14 +50,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        ignoreLogin(http);
+        setLogin(http);
+        setLogout(http);
+        ignoreCsrf(http);
+        // http.csrf().disable();   // disabled：クロスサイトリクエストフォージェリ対策を無効にする
+    }
+
+    private void ignoreLogin(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/signup").permitAll()
+                .antMatchers("/rest/**").permitAll()
                 .antMatchers("/admin").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated();
+    }
 
+    private void setLogin(HttpSecurity http) throws Exception {
         http.formLogin()
                 .loginProcessingUrl("/login")
                 .loginPage("/login")
@@ -64,13 +76,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("userId")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/home", true);
+    }
 
+    private void setLogout(HttpSecurity http) throws Exception {
         http.logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login");
+    }
 
-        // http.csrf().disable();   // disabled：クロスサイトリクエストフォージェリ対策を無効にする
+    private void ignoreCsrf(HttpSecurity http) throws Exception {
+        RequestMatcher csrfMatcher = new RestMatcher("/rest/**");
+        http.csrf().requireCsrfProtectionMatcher(csrfMatcher);
     }
 
     @Override
