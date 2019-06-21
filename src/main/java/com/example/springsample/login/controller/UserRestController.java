@@ -3,6 +3,7 @@ package com.example.springsample.login.controller;
 import com.example.springsample.login.domain.model.User;
 import com.example.springsample.login.domain.service.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @RestController
 public class UserRestController {
     @Autowired
+    @Qualifier("RestServiceMybatisImpl")
     RestService service;
 
     @GetMapping("/rest/get")
